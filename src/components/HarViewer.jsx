@@ -8,6 +8,7 @@ import React, {Component} from 'react';
 import _ from 'lodash';
 import {Grid, Row, Col, PageHeader, Button, ButtonGroup, Input, Alert} from 'react-bootstrap';
 
+import SampleSelector from './SampleSelector.jsx';
 import FilterBar from './FilterBar.jsx';
 import HarEntryTable from './HarEntryTable.jsx';
 import mimeTypes from '../core/mimeTypes.js';
@@ -34,15 +35,7 @@ export default class HarViewer extends Component {
     }
   }
 
-  /*
-   * The currently selected value in the select box.
-   */
-  sampleChanged() {
-    var selection = this.refs.selector.value;
-    var har = selection
-      ? _.find(window.samples, s => s.id === selection).har
-      : null;
-
+  sampleChanged(har) {
     if (har) {
       this.setState({
         activeHar: har
@@ -167,14 +160,6 @@ export default class HarViewer extends Component {
 
   renderHeader() {
 
-    var options = _.map(window.samples, (s) => {
-      return (
-        <option key={s.id} value={s.id}>
-          {s.label}
-        </option>
-      );
-    });
-
     return (
       <Grid>
 
@@ -183,13 +168,7 @@ export default class HarViewer extends Component {
             <PageHeader>Har Viewer</PageHeader>
           </Col>
           <Col sm={3} smOffset={9}>
-            <div>
-              <label className="control-label"></label>
-              <select ref="selector" className="form-control" onChange={this.sampleChanged.bind(this)}>
-                <option value="">--- </option>
-                {options}
-                </select>
-            </div>
+            <SampleSelector onSampleChanged={this.sampleChanged.bind(this)} />
           </Col>
         </Row>
 
