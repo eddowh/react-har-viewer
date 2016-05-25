@@ -8,7 +8,10 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
 
-  // input file
+  resolve: {
+    modulesDirectories: ['node_modules'],
+  },
+
   entry: {
     app: ['./src/app.jsx']
   },
