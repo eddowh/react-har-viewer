@@ -19,15 +19,16 @@ export default class HarViewer extends Component {
 
   constructor() {
     super();
-    this.state = {
-      entries: []
-    };
+    this.state = this._initialState();
   }
 
   _initialState() {
     return {
-      activeHar: null,
-      entries: []
+      // activeHar: null,
+      activeHar: _.find(window.samples, s => s.id == 'so').har,
+      sortKey: null,
+      sortDirection: null,
+      // entries: []
     }
   }
 
@@ -35,7 +36,7 @@ export default class HarViewer extends Component {
    * The currently selected value in the select box.
    */
   sampleChanged() {
-    var selection = this.refs.selector.getDOMNode().value;
+    var selection = this.refs.selector.value;
     var har = selection
       ? _.find(window.samples, s => s.id === selection).har
       : null;
@@ -50,6 +51,42 @@ export default class HarViewer extends Component {
     }
   }
 
+
+  // ================================================
+  //                   Sorting
+  // ================================================
+  onColumnSort(dataKey, direction) {
+    this.setState({
+      sortKey: dataKey,
+      sortDirection: direction
+    });
+  }
+
+  sortEntriesByKey(sortKey, sortDirection, entries) {
+    if (_.isEmpty(sortKey) | _.isEmpty(sortDirection)) return entries;
+
+    var keyMap = {
+      url: 'request.url',
+      time: 'time.start'
+    };
+
+    var getValue = function(entry) {
+      var key = keyMap[sortKey] || sortKey;
+      return _.get(entry, key);
+    };
+
+    var sorted = _.sortBy(entries, getValue);
+    if (sortDirection === 'desc') {
+      sorted.reverse()
+    };
+
+    return sorted;
+  }
+
+
+  // ================================================
+  //                  Rendering
+  // ================================================
   renderEmptyViewer() {
     return (
       <Grid>
@@ -68,13 +105,21 @@ export default class HarViewer extends Component {
   renderViewer(har) {
     var pages = harParser.parse(har),
         currentPage = pages[0];
-    var entries = currentPage.entries;
+
+    var entries = this.sortEntriesByKey(
+      this.state.sortKey,
+      this.state.sortDirection,
+      currentPage.entries
+    );
 
     return (
       <Grid>
         <Row>
           <Col sm={12}>
-            <HarEntryTable entries={entries} />
+            <HarEntryTable
+              entries={entries}
+              onColumnSort={this.onColumnSort.bind(this)}
+            />
           </Col>
         </Row>
       </Grid>

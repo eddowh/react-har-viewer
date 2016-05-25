@@ -9,7 +9,9 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
 
   resolve: {
-    modulesDirectories: ['node_modules'],
+    modulesDirectories: [
+      'node_modules'
+    ]
   },
 
   entry: {
