@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom';
 // Stylesheets
 require('bootstrap/dist/css/bootstrap.css');
 require('bootstrap/dist/css/bootstrap-theme.css');
-require('./app.scss');
+require('./css/app.scss');
 
 // Local
 require('./samples.js');
