@@ -26,6 +26,8 @@ export default class HarViewer extends Component {
     return {
       // activeHar: null,
       activeHar: _.find(window.samples, s => s.id == 'so').har,
+      filterType: 'all',
+      filterText: null,
       sortKey: null,
       sortDirection: null,
       // entries: []
@@ -51,6 +53,30 @@ export default class HarViewer extends Component {
     }
   }
 
+
+  // ================================================
+  //                   Filtering
+  // ================================================
+  onFilterChanged(type) {
+    this.setState({
+      filterType: type
+    });
+  }
+
+  onFilterTextChanged(text) {
+    this.setState({
+      filterText: text
+    });
+  }
+
+  filterEntries(filter, entries) {
+    return _.filter(entries, function(x) {
+      var matchesType = filter.type === 'all' || filter.type === x.type,
+          matchesText = _.includes(x.request.url, filter.text || '');
+
+      return matchesType && matchesText;
+    });
+  }
 
   // ================================================
   //                   Sorting
@@ -106,14 +132,26 @@ export default class HarViewer extends Component {
     var pages = harParser.parse(har),
         currentPage = pages[0];
 
+    var filter = {
+      type: this.state.filterType,
+      text: this.state.filterText
+    }
+    var filteredEntries = this.filterEntries(filter, currentPage.entries);
+
     var entries = this.sortEntriesByKey(
       this.state.sortKey,
       this.state.sortDirection,
-      currentPage.entries
+      filteredEntries
     );
 
     return (
       <Grid>
+
+        <FilterBar
+          onChange={this.onFilterChanged.bind(this)}
+          onFilterTextChange={this.onFilterTextChanged.bind(this)}
+        />
+
         <Row>
           <Col sm={12}>
             <HarEntryTable
@@ -122,6 +160,7 @@ export default class HarViewer extends Component {
             />
           </Col>
         </Row>
+
       </Grid>
     )
   }
@@ -160,7 +199,6 @@ export default class HarViewer extends Component {
           </Col>
         </Row>
 
-        <FilterBar />
 
       </Grid>
     );

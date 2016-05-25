@@ -3,7 +3,7 @@
  */
 
 
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import _ from 'lodash';
 import {Row, Col, Button, ButtonGroup, Input} from 'react-bootstrap';
 
@@ -34,9 +34,18 @@ export default class FilterBar extends Component {
   }
 
   filterRequested(type, event) {
+    this.setState({
+      type: type
+    });
+    if (this.props.onChange) {
+      this.props.onChange(type);
+    };
   }
 
   filterTextChanged() {
+    if (this.props.onFilterTextChange) {
+      this.props.onFilterTextChange(this.refs.filterText.getValue());
+    };
   }
 
   render() {
@@ -66,3 +75,13 @@ export default class FilterBar extends Component {
   }
 
 }
+
+FilterBar.defaultProps = {
+  onChange: null,
+  onFilterTextChange: null
+};
+
+FilterBar.propTypes = {
+  onChange: PropTypes.func,
+  onFilterTextChange: PropTypes.func
+};
