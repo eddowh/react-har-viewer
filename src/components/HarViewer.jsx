@@ -8,9 +8,9 @@ import React, {Component} from 'react';
 import _ from 'lodash';
 import {Grid, Row, Col, PageHeader, Button, ButtonGroup, Input, Alert} from 'react-bootstrap';
 
-import SampleSelector from './SampleSelector.jsx';
 import FilterBar from './FilterBar.jsx';
 import HarEntryTable from './HarEntryTable.jsx';
+import SampleSelector from './SampleSelector.jsx';
 import mimeTypes from '../core/mimeTypes.js';
 
 import harParser from '../core/har-parser.js';
@@ -106,6 +106,31 @@ export default class HarViewer extends Component {
   // ================================================
   //                  Rendering
   // ================================================
+  renderHeader() {
+
+    return (
+      <Grid>
+
+        <Row>
+          <Col sm={12}>
+            <PageHeader>Har Viewer</PageHeader>
+          </Col>
+          <Col sm={3} smOffset={9}>
+            <SampleSelector onSampleChanged={this.sampleChanged.bind(this)} />
+          </Col>
+        </Row>
+
+        <Row>
+          <Col sm={12}>
+            <p>Pie Chart</p>
+          </Col>
+        </Row>
+
+
+      </Grid>
+    );
+  }
+
   renderEmptyViewer() {
     return (
       <Grid>
@@ -149,6 +174,7 @@ export default class HarViewer extends Component {
           <Col sm={12}>
             <HarEntryTable
               entries={entries}
+              page={currentPage}
               onColumnSort={this.onColumnSort.bind(this)}
             />
           </Col>
@@ -156,31 +182,6 @@ export default class HarViewer extends Component {
 
       </Grid>
     )
-  }
-
-  renderHeader() {
-
-    return (
-      <Grid>
-
-        <Row>
-          <Col sm={12}>
-            <PageHeader>Har Viewer</PageHeader>
-          </Col>
-          <Col sm={3} smOffset={9}>
-            <SampleSelector onSampleChanged={this.sampleChanged.bind(this)} />
-          </Col>
-        </Row>
-
-        <Row>
-          <Col sm={12}>
-            <p>Pie Chart</p>
-          </Col>
-        </Row>
-
-
-      </Grid>
-    );
   }
 
   render() {

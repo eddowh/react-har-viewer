@@ -8,6 +8,9 @@ require('../css/har-entry-table.scss');
 import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
+import d3 from 'd3';
+
+import TimeBar from './TimeBar.jsx';
 
 import FixedDataTable, {Table, Column} from 'fixed-data-table';
 const GutterWidth = 30;
@@ -76,6 +79,40 @@ export default class HarEntryTable extends Component {
       tableWidth: parent.clientWidth - GutterWidth,
       tableHeight: document.body.clientHeight - parent.offsetTop - GutterWidth * 0.5
     })
+  }
+
+  // ================================================
+  //          Custom Cell Rendering
+  // ================================================
+  renderTimeColumn(cellData, cellDataKey, rowData, rowIndex, columnData, width) {
+    var start = rowData.time.start,
+        total = rowData.time.total,
+        pgTimings = this.props.page.pageTimings,
+        scale = this.prepareScale(this.props.entries, this.props.page);
+
+    return (
+      <TimeBar
+        scale={scale}
+        start={start}
+        total={total}
+        timings={rowData.time.details}
+        domContentLoad={pgTimings.onContentLoad}
+        pageLoad={pgTimings.onLoad}
+      />
+    )
+  }
+
+  prepareScale(entries, page) {
+    var startTime = 0,
+        lastEntry = _.last(entries),
+        endTime = lastEntry.time.start + lastEntry.time.total,
+        maxTime = Math.max(endTime, page.pageTimings.onLoad);
+
+    var scale = d3.scale.linear()
+      .domain([startTime, Math.ceil(maxTime)])
+      .range([0, 100]);
+
+    return scale;
   }
 
   // ================================================
@@ -153,6 +190,7 @@ export default class HarEntryTable extends Component {
           dataKey="time"
           width={this.state.columnWidths.time}
           headerRenderer={this.renderHeader.bind(this)}
+          cellRenderer={this.renderTimeColumn.bind(this)}
           cellDataGetter={this.readKey.bind(this)}
           isResizable={true}
           label="Timeline"
@@ -165,10 +203,12 @@ export default class HarEntryTable extends Component {
 
 HarEntryTable.defaultProps = {
   entries: [],
+  page: null,
   onColumnSort: null
 };
 
 HarEntryTable.propTypes = {
   entries: PropTypes.array,
+  page: PropTypes.object,
   onColumnSort: PropTypes.func
 };
