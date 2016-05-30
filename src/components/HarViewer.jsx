@@ -8,11 +8,12 @@ import React, {Component} from 'react';
 import _ from 'lodash';
 import {Grid, Row, Col, PageHeader, Button, ButtonGroup, Input, Alert} from 'react-bootstrap';
 
+import TypePieChart from './PieChart/TypePieChart.jsx';
 import FilterBar from './FilterBar.jsx';
 import HarEntryTable from './HarEntryTable.jsx';
 import SampleSelector from './SampleSelector.jsx';
-import mimeTypes from '../core/mimeTypes.js';
 
+import mimeTypes from '../core/mimeTypes.js';
 import harParser from '../core/har-parser.js';
 
 
@@ -164,6 +165,12 @@ export default class HarViewer extends Component {
 
     return (
       <Grid>
+
+        <Row>
+          <Col sm={12}>
+            <TypePieChart entries={currentPage.entries}></TypePieChart>
+          </Col>
+        </Row>
 
         <FilterBar
           onChange={this.onFilterChanged.bind(this)}
