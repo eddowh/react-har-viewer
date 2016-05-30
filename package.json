@@ -1,12 +1,16 @@
 {
-  "name": "react-deep-dive-with-webpack",
+  "name": "react-har-viewer",
   "version": "0.0.0",
-  "description": "",
+  "description": "HAR Viewer implemented in React.js",
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --config webpack.config.js --watch",
     "dev": "webpack-dev-server --config webpack.config.js --port 8082 --inline --colors --progress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:eddowh/react-har-viewer.git"
   },
   "author": "Eddo W. Hintoso",
   "license": "ISC",
