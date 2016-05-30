@@ -14,6 +14,9 @@ import FixedDataTable, {Table, Column} from 'fixed-data-table';
 const GutterWidth = 30;
 
 import TimeBar from './TimeBar/TimeBar.jsx';
+import FileType from './FileType.jsx';
+
+import formatter from '../core/formatter.js';
 
 
 export default class HarEntryTable extends Component {
@@ -84,6 +87,18 @@ export default class HarEntryTable extends Component {
   // ================================================
   //          Custom Cell Rendering
   // ================================================
+  renderSizeColumn(cellData, cellDataKey, rowData, rowIndex, columnData, width) {
+    return (
+      <span>{formatter.fileSize(cellData)}</span>
+    );
+  }
+
+  renderUrlColumn(cellData, cellDataKey, rowData, rowIndex, columnData, width) {
+    return (
+      <FileType url={rowData.request.url} type={rowData.type} />
+    );
+  }
+
   renderTimeColumn(cellData, cellDataKey, rowData, rowIndex, columnData, width) {
     var start = rowData.time.start,
         total = rowData.time.total,
@@ -173,6 +188,7 @@ export default class HarEntryTable extends Component {
           dataKey="url"
           width={this.state.columnWidths.url}
           headerRenderer={this.renderHeader.bind(this)}
+          cellRenderer={this.renderUrlColumn.bind(this)}
           cellDataGetter={this.readKey.bind(this)}
           isResizable={true}
           flewGrow={null}
@@ -182,6 +198,7 @@ export default class HarEntryTable extends Component {
           dataKey="size"
           width={this.state.columnWidths.size}
           headerRenderer={this.renderHeader.bind(this)}
+          cellRenderer={this.renderSizeColumn.bind(this)}
           cellDataGetter={this.readKey.bind(this)}
           isResizable={true}
           label="Size"
