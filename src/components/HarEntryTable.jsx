@@ -10,10 +10,10 @@ import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import d3 from 'd3';
 
-import TimeBar from './TimeBar.jsx';
-
 import FixedDataTable, {Table, Column} from 'fixed-data-table';
 const GutterWidth = 30;
+
+import TimeBar from './TimeBar/TimeBar.jsx';
 
 
 export default class HarEntryTable extends Component {

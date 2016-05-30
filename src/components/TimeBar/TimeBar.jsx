@@ -1,17 +1,16 @@
-/**
- *
- */
-
-
 // React
 import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
+import {OverlayTrigger, Popover} from 'react-bootstrap';
+
+// Subcomponents
+import TimingDetails from './TimingDetails.jsx';
 
 // Stylesheets
-require('../css/timebar.scss');
+require('../../css/timebar.scss');
 
 // Helpers
-import formatter from '../core/formatter.js';
+import formatter from '../../core/formatter.js';
 
 
 export default class TimeBar extends Component {
@@ -62,12 +61,28 @@ export default class TimeBar extends Component {
       })
       .value();
 
+    var overlay = (
+      <Popover title={`Timing Details, started at: ${formatter.time(this.props.start)}`}>
+        <TimingDetails
+          timings={this.props.timings}
+          start={this.props.start}
+          total={this.props.total}
+        />
+      </Popover>
+    );
+
     return (
-      <div className="timebar">
-        {barElements}
-        <span className="timebar-label">{label}</span>
-      </div>
-    )
+        <OverlayTrigger
+        trigger={['hover', 'focus']}
+        placement="left"
+        delay={0}
+        overlay={overlay}>
+        <div className="timebar">
+          {barElements}
+          <span className="timebar-label">{label}</span>
+        </div>
+      </OverlayTrigger>
+    );
   }
 
 }
